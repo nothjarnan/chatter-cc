@@ -7,7 +7,7 @@ end
 os.loadAPI(".chat/net")
 net.disablelog()
 local mx, my = term.getSize()
-local server = "localhost:6789"
+local server = "chat.nothy.se:6789"
 if tArgs[2] ~= nil and type(tArgs[2]) == "string" then
   server = tArgs[2]
 end
@@ -108,7 +108,7 @@ function timer()
   while(true) do
     local event, button, x, y = os.pullEvent()
     if event == "timer" and button == t and not typing then
-      t = os.startTimer(2)
+      t = os.startTimer(1)
       getMessages()
       draw()
     end
