@@ -105,9 +105,10 @@ function clicks()
   end
 end
 function timer()
+  t = os.startTimer(1)
   while(true) do
-    local event, button, x, y = os.pullEvent()
-    if event == "timer" and button == t and not typing then
+    local event, tid = os.pullEvent("timer")
+    if event == "timer" and tid == t and not typing then
       t = os.startTimer(1)
       getMessages()
       draw()
