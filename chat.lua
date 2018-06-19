@@ -3,7 +3,7 @@ local username = "Guest"..math.random(0,10000)
 if tArgs[1] ~= nil and type(tArgs[1]) == "string" then
   username = tArgs[1]
 end
-
+local version = "beta v1.0"
 os.loadAPI(".chat/net")
 net.disablelog()
 local mx, my = term.getSize()
@@ -45,13 +45,13 @@ function draw()
       term.scroll(1)
     end
   end
-  term.setCursorPos(1,18)
+  term.setCursorPos(1,my-1)
   term.setTextColor(colors.lightBlue)
   write("> ")
   term.setTextColor(colors.white)
-  term.setCursorPos(1,19)
+  term.setCursorPos(1,my)
   term.setTextColor(colors.gray)
-  write(""..username.." | "..server)
+  write(""..username.." | "..server.." | "..version)
   term.setTextColor(colors.white)
 end
 
@@ -61,20 +61,20 @@ function clicks()
     getMessages()
     draw()
     local event, button, x, y = os.pullEvent("mouse_click")
-    if x >= 1 and x <= 46 and y == 18 then
+    if x >= 1 and x <= 46 and y == my-1 then
       typing = true
-      term.setCursorPos(1,18)
+      term.setCursorPos(1,my-1)
       term.setTextColor(colors.lightBlue)
       term.setBackgroundColor(colors.white)
       term.clearLine()
       write("> ")
       term.setTextColor(colors.gray)
-      term.setCursorPos(3,18)
+      term.setCursorPos(3,my-1)
       msg = read(nil, history)
       term.setBackgroundColor(colors.black)
       term.setTextColor(colors.white)
       term.clearLine()
-      term.setCursorPos(3,18)
+      term.setCursorPos(3,my-1)
       term.setTextColor(colors.lightBlue)
       write("> ")
 
@@ -90,12 +90,12 @@ function clicks()
         else
           if string.len(msg) >= 256 then
             term.setBackgroundColor(colors.red)
-            term.setCursorPos(1,18)
+            term.setCursorPos(1,my-1)
             term.clearLine()
             sleep(0.25)
             term.setBackgroundColor(colors.black)
             term.clearLine()
-            term.setCursorPos(3,18)
+            term.setCursorPos(3,my-1)
             term.setTextColor(colors.lightBlue)
             write("> ")
           end
@@ -113,6 +113,9 @@ function timer()
       draw()
     end
   end
+
+end
+function update()
 
 end
 shell.run("clear")
