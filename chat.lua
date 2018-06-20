@@ -41,7 +41,7 @@ function draw()
     print(v.message)
     term.setTextColor(colors.white)
     local cx, cy = term.getCursorPos()
-    if cy >= 17 then
+    if cy >= my-2 then
       term.scroll(1)
     end
   end
@@ -105,11 +105,11 @@ function clicks()
   end
 end
 function timer()
-  t = os.startTimer(1)
+  t = os.startTimer(10)
   while(true) do
     local event, tid = os.pullEvent("timer")
     if event == "timer" and tid == t and not typing then
-      t = os.startTimer(1)
+      t = os.startTimer(10)
       getMessages()
       draw()
     end
