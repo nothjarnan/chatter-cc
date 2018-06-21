@@ -20,7 +20,7 @@ function getMessages()
   local msgs_bak = net.getMessages(server, username)
   if msgs_bak == nil then
     term.setTextColor(colors.red)
-    print("Connection lost, reconnecting..")
+    error("Could not connect to "..server)
     term.setTextColor(colors.white)
   else
     connected = true
@@ -105,10 +105,11 @@ function clicks()
   end
 end
 function timer()
+  t = os.startTimer(10)
   while(true) do
-    local event, button, x, y = os.pullEvent()
-    if event == "timer" and button == t and not typing then
-      t = os.startTimer(1)
+    local event, tid = os.pullEvent("timer")
+    if event == "timer" and tid == t and not typing then
+      t = os.startTimer(10)
       getMessages()
       draw()
     end
