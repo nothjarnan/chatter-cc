@@ -22,9 +22,11 @@ function getMessages()
     term.setTextColor(colors.red)
     print("Connection lost, reconnecting..")
     term.setTextColor(colors.white)
+    return false
   else
     connected = true
     msgs = msgs_bak
+    return true
   end
 end
 
@@ -58,7 +60,9 @@ end
 function clicks()
   local t = os.startTimer(10)
   while(true) do
-    getMessages()
+    if not getMessages() then
+      error("could not connect to "..server)
+    end
     draw()
     local event, button, x, y = os.pullEvent("mouse_click")
     if x >= 1 and x <= 46 and y == my-1 then
