@@ -7,7 +7,7 @@ local version = "beta v1.0"
 os.loadAPI(".chat/net")
 net.disablelog()
 local mx, my = term.getSize()
-local server = "chat.nothy.se:1337"
+local server = "chat.nothy.se:6789"
 if tArgs[2] ~= nil and type(tArgs[2]) == "string" then
   server = tArgs[2]
 end
@@ -20,13 +20,11 @@ function getMessages()
   local msgs_bak = net.getMessages(server, username)
   if msgs_bak == nil then
     term.setTextColor(colors.red)
-    print("Connection lost, reconnecting..")
+    error("Could not connect to "..server)
     term.setTextColor(colors.white)
-    return false
   else
     connected = true
     msgs = msgs_bak
-    return true
   end
 end
 
@@ -43,7 +41,7 @@ function draw()
     print(v.message)
     term.setTextColor(colors.white)
     local cx, cy = term.getCursorPos()
-    if cy >= my-2 then
+    if cy >= 17 then
       term.scroll(1)
     end
   end
@@ -60,9 +58,7 @@ end
 function clicks()
   local t = os.startTimer(10)
   while(true) do
-    if not getMessages() then
-      error("could not connect to "..server)
-    end
+    getMessages()
     draw()
     local event, button, x, y = os.pullEvent("mouse_click")
     if x >= 1 and x <= 46 and y == my-1 then

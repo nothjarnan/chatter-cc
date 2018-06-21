@@ -66,6 +66,7 @@ function getMessages(hostname, username)
   local msg = send(hostname,"._client.getMessages",username)
   if msg == nil then
     if log then print("could not get messages") end
+    return nil
   else
     local msg_json = json.jdecode( msg )
     if type(msg_json) == "table" then
