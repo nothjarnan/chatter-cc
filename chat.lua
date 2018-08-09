@@ -32,6 +32,7 @@ local history = {}
 local typing = false
 local attempt = 1
 local status = "Connecting.."
+local server_name = "Not Connected"
 local select = 1
 local mx, my = term.getSize()
 
@@ -148,7 +149,7 @@ function draw()
     term.setTextColor(colors.white)
     term.setCursorPos(1,my)
     term.setTextColor(colors.gray)
-    write(""..username.." | "..status.." | "..version)
+    write(""..username.." | "..server_name.." | "..version)
     term.setTextColor(colors.white)
   end
   if menu == "serverlist" then
@@ -305,8 +306,10 @@ function clicks()
       if event == "key" and button == keys.enter then
         if select ~= #serverList then
           server = serverList[select].address
+          server_name = serverList[select].name
         else
           server = textField(my-3)
+          server_name = server
         end
         term.setTextColor(colors.gray)
         term.setBackgroundColor(colors.black)
