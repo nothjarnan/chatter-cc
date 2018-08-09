@@ -3,7 +3,7 @@ local username = "Guest"..math.random(0,10000)
 if tArgs[1] ~= nil and type(tArgs[1]) == "string" then
   username = tArgs[1]
 end
-local version = "beta v1.5 experimental"
+local version = "beta v1.5"
 os.loadAPI(".chat/net")
 net.disablelog()
 local mx, my = term.getSize()
@@ -312,7 +312,7 @@ function clicks()
         term.setBackgroundColor(colors.black)
         term.setCursorPos(2, my-1)
         write("Connecting... Please be patient")
-        local ok = getMessages()
+        local ok,err = pcall(getMessages)
         if ok then
           write(".. Connected!")
           sleep(1)
