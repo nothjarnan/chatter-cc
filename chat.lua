@@ -8,6 +8,7 @@ os.loadAPI(".chat/net")
 net.disablelog()
 local mx, my = term.getSize()
 local server = "chat.nothy.se:1337"
+
 local serverList = {
   id = {
     address = "",
@@ -21,6 +22,7 @@ local serverList = {
   },
 
 }
+
 if tArgs[2] ~= nil and type(tArgs[2]) == "string" then
   server = tArgs[2]
 end
