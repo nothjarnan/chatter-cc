@@ -74,3 +74,17 @@ function getMessages(hostname, username)
     end
   end
 end
+
+function getServerList(hostname, username)
+  if not username then username = "guest" end
+  local msg = send(hostname,"._client.getServerList",username)
+  if msg == nil then
+    if log then print("could not get messages") end
+    return nil
+  else
+    local list_json = json.jdecode(msg)
+    if type(list_json) == "table" then
+      return list_json
+    end
+  end
+end
