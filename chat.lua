@@ -22,7 +22,8 @@ local serverList = {
   },
 
 }
-
+local direct_conn_pos = 0
+local count_official = 0
 if tArgs[2] ~= nil and type(tArgs[2]) == "string" then
   server = tArgs[2]
 end
@@ -82,9 +83,35 @@ function emoteParse(input)
   end
   -- Stick the string back together
   for k,v in ipairs(string_separated) do
-    parsed_string = parsed_string.." "..v
+    if k == 1 then
+      parsed_string = v
+    else
+      parsed_string = parsed_string.." "..v
+    end
+
   end
   return parsed_string
+end
+
+function sortServerList(list)
+  local officials = {}
+  local community = {}
+  for k,v in pairs(list) do
+    if v.official then
+      table.insert(officials,v)
+    else
+      table.insert( community, v )
+    end
+  end
+  local compiledList = {}
+  for k,v in pairs(officials) do
+    table.insert(compiledList,v)
+  end
+  for k,v in pairs(community) do
+    table.insert(compiledList,v)
+  end
+  count_official = #officials
+  return compiledList
 end
 
 function getMessages()
@@ -107,7 +134,7 @@ function getServerList()
   else
     serverList[#serverList+1] = {
       address = "::",
-      name = "Other...",
+      name = "Direct Connect (IP)",
       official = false
     }
   end
@@ -155,6 +182,13 @@ function draw()
     term.setTextColor(colors.white)
   end
   if menu == "serverlist" then
+    local function isSelected(sel, index)
+      if sel ~= index then
+        return " "
+      else
+        return ""
+      end
+    end
     term.clear()
     term.setCursorPos(1,1)
     term.setTextColor(colors.gray)
@@ -162,6 +196,7 @@ function draw()
     print(" Official Servers ")
     print(string.rep("-",mx))
     term.setTextColor(colors.white)
+
     for k,v in pairs(serverList) do
 
       if select == k then
@@ -171,42 +206,35 @@ function draw()
       end
       if k ~= #serverList then
         if v.official then
-          if select ~= k then
-            term.setTextColor(colors.yellow)
-            write(" [OFFICIAL] ")
-          else
-            term.setTextColor(colors.yellow)
-            write("[OFFICIAL] ")
-          end
+          term.setTextColor(colors.yellow)
+          write(isSelected(select,k).."\4 ")
 
         else
-          if select ~= k then
-            write(" ")
-          else
-            write("")
-          end
+          term.setTextColor(colors.white)
+          write(isSelected(select,k).." ")
         end
         term.setTextColor(colors.white)
         print(emoteParse(v.name).." ("..v.address..")")
         if v.official then
           term.setTextColor(colors.gray)
-          print(string.rep("-",mx))
-          print(" Community Servers ")
-          print(string.rep("-",mx))
+          if k == count_official then
+            print(string.rep("-",mx))
+            print(" Community Servers ")
+            print(string.rep("-",mx))
+          end
+          if k == #serverList then
+            print("")
+          end
           term.setTextColor(colors.white)
-        else
-          print(string.rep(" ",mx))
         end
 
 
       else
-        if select ~= k then
-          term.setTextColor(colors.lightGray)
-          print(" "..v.name)
-        else
-          term.setTextColor(colors.lightGray)
-          print(v.name)
-        end
+        -- Direct connect
+        term.setTextColor(colors.gray)
+        print(isSelected(select,k).." "..v.name)
+        _, direct_conn_pos = term.getCursorPos()
+        direct_conn_pos = direct_conn_pos - 1
 
       end
     end
@@ -238,7 +266,7 @@ function message()
     if string.find(msg,"/",1) == 1 then
       if msg == "/exit" then
         net.send(server,"Goodbye!",username,colors.lightGray)
-        shell.exit()
+        menu = "serverlist"
       end
     else
       if string.len(msg) > 1 and string.len(msg) < 256 then
@@ -266,6 +294,10 @@ function clicks()
   while(true) do
     local event, button, x, y = os.pullEvent()
     if menu == "chat" then
+      if event == "mouse_click" then
+        getMessages()
+        draw()
+      end
       if event == "key" and button == keys.enter then
         draw()
         message()
@@ -310,7 +342,7 @@ function clicks()
           server = serverList[select].address
           server_name = serverList[select].name
         else
-          server = textField(my-3)
+          server = textField(direct_conn_pos)
           server_name = server
         end
         term.setTextColor(colors.gray)
@@ -352,5 +384,6 @@ function update()
 end
 shell.run("clear")
 getServerList()
+serverList = sortServerList(serverList)
 parallel.waitForAny(clicks, timer)
 print("Thanks for using chatter!")
